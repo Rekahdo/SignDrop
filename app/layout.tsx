@@ -4,11 +4,11 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'SignDrop - Digital Signature Collector',
   description:
-    'Minimalist signature collection app with high-resolution JPEG and PDF generation and direct email submission to okaforrichard76@gmail.com.',
+    'Minimalist signature collection app with high-resolution JPEG and PDF generation and direct email submission to javadevrekahdo@gmail.com.',
   openGraph: {
     title: 'SignDrop - Digital Signature Collector',
     description:
-      'Minimalist signature collection app with high-resolution JPEG and PDF generation and direct email submission to okaforrichard76@gmail.com.',
+      'Minimalist signature collection app with high-resolution JPEG and PDF generation and direct email submission to javadevrekahdo@gmail.com.',
     type: 'website',
   },
   twitter: {

@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const {
-      recipient = 'okaforrichard76@gmail.com',
+      recipient = 'javadevrekahdo@gmail.com',
       signerName = 'Signer',
       pdfBase64,
       jpegBase64,

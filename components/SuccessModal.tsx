@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, Download, FileText, Image as ImageIcon, X, ArrowRight, Info } from 'lucide-react';
+import { CheckCircle2, Download, FileText, Image as ImageIcon, X, ArrowRight, Info, MessageCircle } from 'lucide-react';
 import { SignatureExportResult } from '@/lib/types';
 import { Dialog, DialogPopup, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -187,8 +187,23 @@ export function SuccessModal({
             </div>
           )}
 
+          {/* Share to WhatsApp */}
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(
+              `I have signed and submitted my official signature to ${recipientEmail} on SignDrop.${
+                dispatchId ? ` Ref: ${dispatchId}` : ''
+              }`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full mt-4 py-2.5 px-4 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold flex items-center justify-center gap-2 transition-colors active:scale-98"
+          >
+            <MessageCircle className="w-4 h-4 text-emerald-600 fill-emerald-600/20" />
+            <span>Share Confirmation on WhatsApp</span>
+          </a>
+
           {/* Action buttons */}
-          <div className="w-full mt-6 flex flex-col sm:flex-row items-center gap-2.5">
+          <div className="w-full mt-4 flex flex-col sm:flex-row items-center gap-2.5">
             <Button
               onClick={onSignAnother}
               className="w-full sm:flex-1 py-3 h-11"

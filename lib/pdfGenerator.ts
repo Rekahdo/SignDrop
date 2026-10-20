@@ -17,7 +17,7 @@ export async function generateSignatureDocuments({
   canvasHeight,
   signerName = 'Signer',
   notes = '',
-  recipientEmail = 'okaforrichard76@gmail.com',
+  recipientEmail = 'javadevrekahdo@gmail.com',
 }: GenerateDocumentsOptions): Promise<SignatureExportResult> {
   const timestamp = new Date().toISOString();
   const formattedDate = new Date().toLocaleDateString('en-US', {

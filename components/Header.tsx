@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Mail, Share2, Check, ShieldCheck, Settings } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Mail, Share2, Check, ShieldCheck, Settings, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -12,6 +12,13 @@ interface HeaderProps {
 
 export function Header({ recipientEmail, onOpenSettings }: HeaderProps) {
   const [copied, setCopied] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(window.location.href);
+    }
+  }, []);
 
   const handleCopyLink = async () => {
     try {
@@ -29,6 +36,12 @@ export function Header({ recipientEmail, onOpenSettings }: HeaderProps) {
       setTimeout(() => setCopied(false), 2500);
     }
   };
+
+  const whatsappShareUrl = currentUrl
+    ? `https://wa.me/?text=${encodeURIComponent(
+        `Please use this link to draw and submit your signature to ${recipientEmail}: ${currentUrl}`
+      )}`
+    : '#';
 
   return (
     <header className="w-full border-b border-zinc-100 bg-white">
@@ -63,8 +76,9 @@ export function Header({ recipientEmail, onOpenSettings }: HeaderProps) {
           </div>
         </div>
 
-        {/* Recipient & Share */}
-        <div className="flex items-center flex-wrap gap-2.5">
+        {/* Recipient & Share Actions */}
+        <div className="flex items-center flex-wrap gap-2">
+          {/* Recipient Indicator */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-50 border border-zinc-200/80 text-xs font-medium text-zinc-700 shadow-2xs">
             <Mail className="w-3.5 h-3.5 text-zinc-500" />
             <span className="text-zinc-500 hidden md:inline">Sends to:</span>
@@ -73,21 +87,35 @@ export function Header({ recipientEmail, onOpenSettings }: HeaderProps) {
             </span>
           </div>
 
+          {/* Share to WhatsApp Button */}
+          <a
+            href={whatsappShareUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-300 transition-colors shadow-2xs active:scale-95"
+            title="Share this signature request via WhatsApp"
+          >
+            <MessageCircle className="w-3.5 h-3.5 text-emerald-600 fill-emerald-600/20" />
+            <span>WhatsApp</span>
+          </a>
+
+          {/* Copy Share Link Button */}
           <Button
             variant="outline"
             size="sm"
             onClick={handleCopyLink}
             className="h-8 gap-1.5 text-xs rounded-lg"
+            title="Copy link to clipboard"
           >
             {copied ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-emerald-700 font-medium">Link Copied</span>
+                <span className="text-emerald-700 font-medium">Copied</span>
               </>
             ) : (
               <>
                 <Share2 className="w-3.5 h-3.5 text-zinc-500" />
-                <span>Share Link</span>
+                <span>Copy Link</span>
               </>
             )}
           </Button>

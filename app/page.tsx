@@ -7,13 +7,13 @@ import { SuccessModal } from '@/components/SuccessModal';
 import { EmailConfigModal } from '@/components/EmailConfigModal';
 import { Stroke, SignatureExportResult, SubmissionResponse } from '@/lib/types';
 import { generateSignatureDocuments } from '@/lib/pdfGenerator';
-import { RotateCcw, Send, AlertCircle, Calendar, User, Loader2, Sparkles, Shield } from 'lucide-react';
+import { RotateCcw, Send, AlertCircle, Calendar, User, Loader2, Sparkles, Shield, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-const TARGET_RECIPIENT_EMAIL = 'okaforrichard76@gmail.com';
+const TARGET_RECIPIENT_EMAIL = 'javadevrekahdo@gmail.com';
 
 export default function SignaturePage() {
   const [strokes, setStrokes] = useState<Stroke[]>([]);
@@ -37,8 +37,11 @@ export default function SignaturePage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [resendApiKey, setResendApiKey] = useState('');
 
+  const [pageUrl, setPageUrl] = useState('');
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      setPageUrl(window.location.href);
       const saved = localStorage.getItem('signdrop_resend_key');
       if (saved) setResendApiKey(saved);
     }
@@ -137,11 +140,25 @@ export default function SignaturePage() {
         <div className="space-y-6">
           {/* Header Title & Prompt */}
           <div className="text-center sm:text-left space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 mb-1">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
               <Badge variant="secondary" className="gap-1.5 py-1 px-3 text-xs font-semibold">
                 <Sparkles className="w-3.5 h-3.5 text-zinc-600" />
                 <span>Next.js 16 Signature Portal</span>
               </Badge>
+              {pageUrl && (
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(
+                    `Please use this link to sign and submit your signature to ${TARGET_RECIPIENT_EMAIL}: ${pageUrl}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 hover:bg-emerald-100 hover:border-emerald-300 transition-colors shadow-2xs"
+                  title="Share this page via WhatsApp"
+                >
+                  <MessageCircle className="w-3 h-3 text-emerald-600 fill-emerald-600/20" />
+                  <span>Share on WhatsApp</span>
+                </a>
+              )}
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950">
               Sign &amp; Submit Document
