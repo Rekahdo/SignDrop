@@ -1,4 +1,4 @@
-import { Point, Stroke } from '../types';
+import { Point, Stroke } from './types';
 
 /**
  * Renders smooth ink strokes on a 2D canvas context.
@@ -21,10 +21,9 @@ export function drawStrokeOnContext(
   ctx.lineJoin = 'round';
 
   if (points.length === 1) {
-    // Single dot
     const p = points[0];
     ctx.beginPath();
-    ctx.arc(p.x * scaleX, p.y * scaleY, (ctx.lineWidth / 2), 0, Math.PI * 2);
+    ctx.arc(p.x * scaleX, p.y * scaleY, ctx.lineWidth / 2, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
     return;
@@ -56,7 +55,6 @@ export function drawStrokeOnContext(
     );
   }
 
-  // Draw to the final point
   const lastPoint = points[points.length - 1];
   ctx.lineTo(lastPoint.x * scaleX, lastPoint.y * scaleY);
   ctx.stroke();
@@ -107,7 +105,6 @@ export function exportHighResJpeg(
         drawStrokeOnContext(ctx, stroke, scaleX, scaleY);
       }
 
-      // Export as high-quality JPEG
       const dataUrl = offscreenCanvas.toDataURL('image/jpeg', 0.96);
       const base64 = dataUrl.split(',')[1];
 

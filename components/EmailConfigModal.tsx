@@ -1,5 +1,10 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Mail, Key, X, CheckCircle, Info, RefreshCw, Send, ShieldAlert } from 'lucide-react';
+import { Mail, Key, X, CheckCircle, RefreshCw } from 'lucide-react';
+import { Dialog, DialogPopup, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface EmailConfigModalProps {
   isOpen: boolean;
@@ -40,17 +45,16 @@ export function EmailConfigModal({
         setDispatches(data.dispatches || []);
       }
     } catch {
-      // Ignore network errors
     } finally {
       setLoadingDispatches(false);
     }
   };
 
-  if (!isOpen) return null;
-
   const handleSave = () => {
     setResendApiKey(tempKey.trim());
-    localStorage.setItem('signdrop_resend_key', tempKey.trim());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('signdrop_resend_key', tempKey.trim());
+    }
     setSavedSuccess(true);
     setTimeout(() => {
       setSavedSuccess(false);
@@ -59,15 +63,17 @@ export function EmailConfigModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/50 backdrop-blur-xs">
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-zinc-200 overflow-hidden text-zinc-900">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogPopup className="max-w-lg p-0 overflow-hidden">
         <div className="flex items-center justify-between p-5 border-b border-zinc-100">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-700">
               <Mail className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-zinc-900">Email Delivery &amp; Services</h3>
+              <DialogTitle className="text-base font-bold text-zinc-900">
+                Resend Email Settings
+              </DialogTitle>
               <p className="text-xs text-zinc-500">Configured to send to {recipientEmail}</p>
             </div>
           </div>
@@ -80,37 +86,34 @@ export function EmailConfigModal({
           </button>
         </div>
 
-        <div className="p-5 space-y-4 max-h-[80vh] overflow-y-auto">
-          {/* Target destination banner */}
+        <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
           <div className="bg-zinc-50 border border-zinc-200/80 rounded-xl p-3 text-xs space-y-1">
             <div className="flex items-center justify-between font-medium">
               <span className="text-zinc-500">Configured Recipient:</span>
               <span className="font-semibold text-zinc-900 font-mono">{recipientEmail}</span>
             </div>
             <p className="text-[11px] text-zinc-500">
-              Every submitted signature is bundled into a PDF + High-Res JPEG and sent to this inbox.
+              Every submitted signature is converted to PDF + High-Res JPEG and sent to this address using Resend.
             </p>
           </div>
 
-          {/* Optional Resend API Key */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-zinc-800 flex items-center gap-1.5">
               <Key className="w-3.5 h-3.5 text-zinc-500" />
-              <span>Resend API Key (Optional)</span>
+              <span>Resend API Key (Optional Override)</span>
             </label>
-            <input
+            <Input
               type="password"
               value={tempKey}
               onChange={(e) => setTempKey(e.target.value)}
-              placeholder="re_123456789... (optional)"
-              className="w-full text-xs font-mono px-3 py-2 rounded-xl border border-zinc-200 focus:outline-hidden focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-colors"
+              placeholder="re_123456789... (defaults to environment SIGNDROP_RESEND_API_KEY)"
+              className="text-xs font-mono h-10"
             />
             <p className="text-[11px] text-zinc-500">
-              If left blank, the app uses the built-in delivery system which converts both attachments, records the transmission, and logs the dispatch. Adding a key enables direct inbox transmission through your Resend account.
+              Provide your Resend API key for direct delivery to your inbox, or leave blank to use the built-in system logger and exporter.
             </p>
           </div>
 
-          {/* Recent Transmission Audit Log */}
           <div className="border-t border-zinc-100 pt-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-xs font-bold text-zinc-900">Recent Signature Dispatches</h4>
@@ -127,7 +130,7 @@ export function EmailConfigModal({
             {dispatches.length === 0 ? (
               <p className="text-xs text-zinc-400 italic py-2">No signatures dispatched yet this session.</p>
             ) : (
-              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
                 {dispatches.map((d) => (
                   <div
                     key={d.id}
@@ -155,26 +158,18 @@ export function EmailConfigModal({
 
         <div className="p-4 border-t border-zinc-100 flex items-center justify-between bg-zinc-50">
           <span className="text-[11px] text-zinc-500">
-            {savedSuccess ? 'Settings saved!' : 'Configuration is stored locally.'}
+            {savedSuccess ? 'Settings saved!' : 'Configuration stored locally.'}
           </span>
           <div className="flex items-center gap-2">
-            <button
-              onClick={onClose}
-              type="button"
-              className="px-3 py-1.5 text-xs font-semibold text-zinc-600 hover:text-zinc-900"
-            >
+            <Button variant="ghost" size="sm" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              type="button"
-              className="px-4 py-1.5 text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg transition-colors"
-            >
+            </Button>
+            <Button size="sm" onClick={handleSave}>
               Save Settings
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogPopup>
+    </Dialog>
   );
 }

@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { exportHighResJpeg } from './canvasRenderer';
-import { Stroke, SignatureExportResult } from '../types';
+import { Stroke, SignatureExportResult } from './types';
 
 export interface GenerateDocumentsOptions {
   strokes: Stroke[];
@@ -11,10 +11,6 @@ export interface GenerateDocumentsOptions {
   recipientEmail?: string;
 }
 
-/**
- * Generates both the high-resolution JPEG (solid white background)
- * and the official PDF document containing the signature.
- */
 export async function generateSignatureDocuments({
   strokes,
   canvasWidth,
@@ -58,31 +54,31 @@ export async function generateSignatureDocuments({
   doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
   // Outer decorative border
-  doc.setDrawColor(228, 228, 231); // zinc-200
+  doc.setDrawColor(228, 228, 231);
   doc.setLineWidth(0.6);
   doc.roundedRect(margin - 5, margin - 5, contentWidth + 10, pageHeight - (margin * 2) + 10, 3, 3, 'S');
 
-  // Inner subtle accent header band
-  doc.setFillColor(250, 250, 250); // zinc-50
+  // Header band
+  doc.setFillColor(250, 250, 250);
   doc.rect(margin - 4.5, margin - 4.5, contentWidth + 9, 28, 'F');
 
   // Header Title
-  doc.setTextColor(24, 24, 27); // zinc-900
+  doc.setTextColor(24, 24, 27);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   doc.text('DIGITAL SIGNATURE RECORD', margin + 4, margin + 11);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setTextColor(113, 113, 122); // zinc-500
+  doc.setTextColor(113, 113, 122);
   doc.text('OFFICIAL ELECTRONIC SIGNATURE & VERIFICATION CERTIFICATE', margin + 4, margin + 17);
   doc.text(`DELIVERED TO: ${recipientEmail.toUpperCase()}`, margin + 4, margin + 22);
 
   // Status Badge
-  doc.setFillColor(240, 253, 244); // green-50
-  doc.setDrawColor(187, 247, 208); // green-200
+  doc.setFillColor(240, 253, 244);
+  doc.setDrawColor(187, 247, 208);
   doc.roundedRect(pageWidth - margin - 40, margin + 6, 38, 14, 2, 2, 'FD');
-  doc.setTextColor(22, 101, 52); // green-800
+  doc.setTextColor(22, 101, 52);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
   doc.text('STATUS: EXECUTED', pageWidth - margin - 37, margin + 15);
@@ -137,14 +133,12 @@ export async function generateSignatureDocuments({
 
   const boxWidth = contentWidth;
   const boxHeight = 70;
-  
-  // White card with subtle border for signature
+
   doc.setFillColor(255, 255, 255);
   doc.setDrawColor(228, 228, 231);
   doc.setLineWidth(0.5);
   doc.roundedRect(margin, currentY, boxWidth, boxHeight, 3, 3, 'FD');
 
-  // Baseline signature guideline
   const lineY = currentY + boxHeight - 16;
   doc.setDrawColor(212, 212, 216);
   doc.setLineWidth(0.3);
@@ -155,8 +149,6 @@ export async function generateSignatureDocuments({
   doc.setTextColor(161, 161, 170);
   doc.text('SIGNATURE OF RECORD', margin + 16, lineY + 5);
 
-  // Embed High-Res Signature image
-  // Maintain aspect ratio inside the box
   const imgMargin = 10;
   const imgAvailableWidth = boxWidth - imgMargin * 2;
   const imgAvailableHeight = boxHeight - 24;
@@ -201,7 +193,6 @@ export async function generateSignatureDocuments({
   doc.text(`Document Reference: ${documentRefId}  •  Archived for: ${recipientEmail}`, margin, footerY);
   doc.text('Page 1 of 1', pageWidth - margin - 16, footerY);
 
-  // PDF output
   const pdfBlob = doc.output('blob');
   const pdfDataUrl = doc.output('datauristring');
   const pdfBase64 = pdfDataUrl.split(',')[1];
