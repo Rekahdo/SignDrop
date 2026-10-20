@@ -25,6 +25,8 @@ export interface SubmissionResponse {
   success: boolean;
   message: string;
   recipient: string;
+  deliveredTo?: string;
+  sandboxWarning?: string | null;
   provider?: string;
   dispatchId?: string;
   timestamp?: string;

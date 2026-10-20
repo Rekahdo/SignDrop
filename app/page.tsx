@@ -291,6 +291,8 @@ export default function SignaturePage() {
         onClose={() => setIsSuccessModalOpen(false)}
         onSignAnother={handleSignAnother}
         recipientEmail={TARGET_RECIPIENT_EMAIL}
+        deliveredTo={submissionResponse?.deliveredTo}
+        sandboxWarning={submissionResponse?.sandboxWarning}
         exportResult={exportResult}
         dispatchId={submissionResponse?.dispatchId}
         provider={submissionResponse?.provider}

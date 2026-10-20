@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, Download, FileText, Image as ImageIcon, X, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Download, FileText, Image as ImageIcon, X, ArrowRight, Info } from 'lucide-react';
 import { SignatureExportResult } from '@/lib/types';
 import { Dialog, DialogPopup, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,8 @@ interface SuccessModalProps {
   onClose: () => void;
   onSignAnother: () => void;
   recipientEmail: string;
+  deliveredTo?: string;
+  sandboxWarning?: string | null;
   exportResult: SignatureExportResult | null;
   dispatchId?: string;
   provider?: string;
@@ -22,6 +24,8 @@ export function SuccessModal({
   onClose,
   onSignAnother,
   recipientEmail,
+  deliveredTo,
+  sandboxWarning,
   exportResult,
   dispatchId,
   provider,
@@ -96,12 +100,31 @@ export function SuccessModal({
             </p>
           </div>
 
+          {/* Resend Sandbox Note if routed to owner inbox */}
+          {sandboxWarning && (
+            <div className="w-full mt-3 bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 text-left flex items-start gap-2.5 text-xs text-amber-900">
+              <Info className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+              <div>
+                <p className="font-semibold text-amber-950">Delivered via Resend Sandbox</p>
+                <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                  Email and attachments sent to your registered Resend inbox: <strong>{deliveredTo}</strong>. Under Resend's free sandbox test domain, messages are delivered to the API key owner until a custom domain is verified.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Details */}
           <div className="w-full mt-4 bg-zinc-50 border border-zinc-200/60 rounded-xl p-3 text-left text-xs text-zinc-600 space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-zinc-500">Destination:</span>
               <span className="font-mono font-medium text-zinc-900">{recipientEmail}</span>
             </div>
+            {deliveredTo && deliveredTo !== recipientEmail && (
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-500">Delivered To:</span>
+                <span className="font-mono font-medium text-amber-900">{deliveredTo}</span>
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <span className="text-zinc-500">Attachments:</span>
               <span className="font-medium text-zinc-900">PDF &amp; High-Res JPEG</span>
