@@ -1,0 +1,6 @@
+{
+  "name": "SignDrop - Digital Signature Collector",
+  "description": "Minimalist signature collection app with high-resolution JPEG and PDF generation and direct email submission to okaforrichard76@gmail.com.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
